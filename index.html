@@ -617,6 +617,9 @@ html,body{height:100%}
 <script>
 // Owner's WhatsApp / phone number: country code + 10 digits, no spaces
 const PHONE = "917337207508";
+// Every booking is also added to the owner's Google Sheet
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbx1N6GwBzy0vQ7Mj9cRCG8wd_EzUJW5PHUFcaPLrO7lcsgLZxCiho3ANN3tlsSmULd2JA/exec";
+function sendToSheet(b){ try { fetch(SHEET_URL, {method:"POST", mode:"no-cors", headers:{"Content-Type":"text/plain;charset=utf-8"}, body: JSON.stringify(b), keepalive:true}).catch(()=>{}); } catch(e){} }
 const $ = id => document.getElementById(id);
 const pretty = "+" + PHONE.slice(0,2) + " " + PHONE.slice(2,7) + " " + PHONE.slice(7);
 $("phoneText").textContent = pretty;
@@ -678,6 +681,7 @@ $("bookingForm").addEventListener("submit", async e => {
   $("waLink").href = "https://wa.me/" + PHONE + "?text=" + encodeURIComponent(msg);
   $("done").hidden = false;
   $("done").scrollIntoView({block:"nearest", behavior: smooth()});
+  sendToSheet(b);
   saveLocal(b); renderTrips();
 });
 
