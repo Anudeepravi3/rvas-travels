@@ -519,8 +519,9 @@ html,body{height:100%}
             <label for="fPhone">Mobile number<input id="fPhone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="10-digit mobile"></label>
           </div>
           <div class="row">
-            <label for="fFrom">Pickup location<input id="fFrom" name="from" placeholder="Area, landmark or address"></label>
-            <label for="fTo">Drop location<input id="fTo" name="to" placeholder="City or address"></label>
+            <label for="fTown">Pickup town <small>(within 50 km of Ongole)</small><select id="fTown" name="town"><option value="">Choose your town</option><option>Ongole</option><option>Maddipadu</option><option>Santhanuthalapadu</option><option>Naguluppalapadu</option><option>Tangutur</option><option>Kothapatnam</option><option>Korisapadu</option><option>Chimakurthi</option><option>Singarayakonda</option><option>Zarugumilli</option><option>Chinaganjam</option><option>Mundlamuru</option><option>Addanki</option><option>Inkollu</option><option>Kandukur</option><option>Vetapalem</option><option>Chirala</option><option>Podili</option></select></label>
+            <label for="fFrom">Pickup area or landmark<input id="fFrom" name="from" placeholder="Street, colony or landmark"></label>
+            <label for="fTo">Drop location <small>(anywhere in India)</small><input id="fTo" name="to" placeholder="City or address"></label>
           </div>
           <div class="row">
             <label for="fDate">Pickup date<input id="fDate" name="date" type="date"></label>
@@ -598,6 +599,7 @@ html,body{height:100%}
       <div class="faq">
         <details open><summary>How is the fare decided?</summary><p>The fare depends on the car, the kilometres and the number of days. We tell you the full amount on the confirmation call, before your trip is booked.</p></details>
         <details><summary>Are tolls and parking included?</summary><p>Tolls and parking are paid separately unless your quote says they are included. Ask us on the call and we will tell you exactly.</p></details>
+        <details><summary>Where do you pick up from?</summary><p>We pick up from Ongole and towns within about 50 km, such as Chirala, Kandukur, Addanki, Singarayakonda, Chimakurthi and Podili. Your drop can be anywhere in India. For a pickup farther away, call us and we will check.</p></details>
         <details><summary>Can you go outside Andhra Pradesh?</summary><p>Yes. Our cars carry an All India tourist permit, so we can take you to any state.</p></details>
         <details><summary>How do reward points work?</summary><p>You earn 1 point for every kilometre you travel with us. 100 points give ₹10 off a later trip. Tick “Use my saved points” when you book, or ask us for your balance on WhatsApp.</p></details>
         <details><summary>How do I change or cancel a trip?</summary><p>Open My trips and tap Cancel or Change on the trip, or call us any time. The request goes to us on WhatsApp.</p></details>
@@ -668,12 +670,13 @@ $("bookingForm").addEventListener("submit", async e => {
   const missing = [];
   if(!g("name")) missing.push("your name");
   if(g("phone").replace(/\D/g,"").length < 10) missing.push("a 10-digit mobile number");
-  if(!g("from")) missing.push("pickup location");
+  if(!g("town")) missing.push("your pickup town (we pick up within 50 km of Ongole)");
+  if(!g("from")) missing.push("pickup area or landmark");
   if(!g("date")) missing.push("pickup date");
   if(!g("time")) missing.push("pickup time");
   if(missing.length){ $("formErr").textContent = "Please add " + missing.join(", ") + "."; $("formErr").hidden = false; return; }
   $("formErr").hidden = true;
-  const b = {no: genNo(), name:g("name"), phone:g("phone"), trip:g("trip"), from:g("from"), to:g("to"),
+  const b = {no: genNo(), name:g("name"), phone:g("phone"), trip:g("trip"), from:g("from") + ", " + g("town"), to:g("to"),
     date:g("date"), time:g("time"), ret:g("ret"), car:g("car"), pax:g("pax"), notes:g("notes"), usePts:g("usePts")};
   $("sheetNo").textContent = "NO. " + b.no;
   const msg = toMessage(b);
@@ -757,7 +760,7 @@ function renderTrips(){
         const again = el("button","btn btn-line","Book again"); again.type = "button";
         again.addEventListener("click", () => {
           const f = $("bookingForm");
-          [["fName",t.name],["fPhone",t.phone],["fFrom",t.from],["fTo",t.to],["fCar",t.car],["fPax",t.pax]].forEach(([id,v]) => { if(v) $(id).value = v; });
+          [["fName",t.name],["fPhone",t.phone],["fFrom",(t.from||"").replace(/, [^,]+$/,"")],["fTo",t.to],["fCar",t.car],["fPax",t.pax]].forEach(([id,v]) => { if(v) $(id).value = v; });
           const r = f.querySelector('input[name="trip"][value="' + (t.trip||"").replace(/"/g,"") + '"]'); if(r) r.checked = true;
           go("book");
         });
