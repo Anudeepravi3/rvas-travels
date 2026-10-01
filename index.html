@@ -230,16 +230,31 @@ html,body{height:100%}
 .l-sub{font-family:var(--mono);letter-spacing:.28em;font-size:clamp(.72rem,2.4vw,.9rem);opacity:.75}
 .l-247{display:inline-flex;align-items:center;gap:10px;background:var(--marigold);color:var(--plate-ink);font-family:var(--display);font-weight:900;font-size:clamp(1.5rem,5vw,2.1rem);padding:4px 20px;border-radius:999px;letter-spacing:.04em}
 .l-247 i{width:10px;height:10px;border-radius:50%;background:var(--go);box-shadow:0 0 0 4px rgba(29,138,82,.25)}
-.stage{position:relative;display:grid;align-items:end;min-height:260px;cursor:pointer;border:0;background:none;padding:0;color:inherit;width:100%}
+.stage{position:relative;overflow:hidden;display:grid;align-items:end;min-height:260px;cursor:pointer;border:0;background:none;padding:0;color:inherit;width:100%}
 .stage svg{width:min(1000px,100%);height:auto;max-width:100%;justify-self:center;position:relative;z-index:1;display:block}
 .l-road{position:absolute;left:0;right:0;bottom:0;height:40px;background:#17191a;border-top:3px solid #34393a}
-.l-road::before{content:"";position:absolute;left:-140px;right:0;top:24px;height:6px;background:repeating-linear-gradient(90deg,#e9e6dc 0 70px,transparent 70px 140px)}
+.l-road::before{content:"";position:absolute;left:0;right:-140px;top:24px;height:6px;background:repeating-linear-gradient(90deg,#e9e6dc 0 70px,transparent 70px 140px)}
 @media (prefers-reduced-motion:no-preference){
   .l-road::before{animation:drive2 .9s linear infinite}
   .wheel{animation:spin .6s linear infinite;transform-box:fill-box;transform-origin:center}
   .carbody{animation:bob 1.8s ease-in-out infinite}
 }
-@keyframes drive2{to{transform:translateX(140px)}}
+@keyframes drive2{to{transform:translateX(-140px)}}
+/* fleet: four cars drive in from the left, stop, and drive off to the right */
+.car{transform-box:view-box}
+.car-label{font-family:var(--mono);font-size:26px;font-weight:700;letter-spacing:.16em;fill:var(--marigold)}
+.car2,.car3,.car4{visibility:hidden}
+@media (prefers-reduced-motion:no-preference){
+  .car{visibility:visible;animation:fleet 16s infinite both}
+  .car1{animation-delay:-1s}.car2{animation-delay:3s}.car3{animation-delay:7s}.car4{animation-delay:11s}
+}
+@keyframes fleet{
+  0%{transform:translateX(-115%);animation-timing-function:cubic-bezier(.15,.7,.3,1)}
+  6%{transform:translateX(0)}
+  19%{transform:translateX(0);animation-timing-function:cubic-bezier(.6,0,.9,.4)}
+  25%,100%{transform:translateX(115%)}
+}
+
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes bob{50%{transform:translateY(-2px)}}
 .l-bottom{background:#17191a;display:grid;justify-items:center;gap:14px;text-align:center;padding:18px 20px calc(26px + env(safe-area-inset-bottom,0px))}
@@ -266,132 +281,194 @@ html,body{height:100%}
     <div class="l-247"><i></i>24 × 7</div>
   </div>
 
-  <button type="button" class="stage" id="carStage" aria-label="Book a car">
-    <svg viewBox="96 78 810 244" aria-hidden="true">
-      <defs>
-        <linearGradient id="cPaint" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#8fb8f0"/>
-          <stop offset=".18" stop-color="#3f79c9"/>
-          <stop offset=".5" stop-color="#1c4f9c"/>
-          <stop offset=".78" stop-color="#123a78"/>
-          <stop offset="1" stop-color="#0a2250"/>
-        </linearGradient>
-        <linearGradient id="cGlass" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stop-color="#4b6a80"/>
-          <stop offset=".45" stop-color="#16222b"/>
-          <stop offset="1" stop-color="#05090c"/>
-        </linearGradient>
-        <linearGradient id="cSheen" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stop-color="#fff" stop-opacity="0"/>
-          <stop offset=".5" stop-color="#fff" stop-opacity=".55"/>
-          <stop offset="1" stop-color="#fff" stop-opacity="0"/>
-        </linearGradient>
-        <linearGradient id="cBeam" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stop-color="#fff7d6" stop-opacity=".7"/>
-          <stop offset="1" stop-color="#fff7d6" stop-opacity="0"/>
-        </linearGradient>
-        <radialGradient id="cRim" cx=".45" cy=".4" r=".6">
-          <stop offset="0" stop-color="#ffffff"/>
-          <stop offset=".55" stop-color="#c3c9cd"/>
-          <stop offset="1" stop-color="#6f787e"/>
-        </radialGradient>
-        <radialGradient id="cShadow" cx=".5" cy=".5" r=".5">
-          <stop offset="0" stop-color="#000" stop-opacity=".65"/>
-          <stop offset="1" stop-color="#000" stop-opacity="0"/>
-        </radialGradient>
-        <clipPath id="cBodyClip">
-          <path d="M95 258 C80 256 74 246 74 232 L76 196 C77 176 86 164 104 158 L130 128 C140 112 160 104 190 102 L520 100 C560 100 590 108 616 124 L690 164 C730 170 780 176 812 184 C836 190 846 204 846 220 L846 240 C846 252 838 258 826 258 L752 258 A62 62 0 0 0 628 258 L277 258 A62 62 0 0 0 153 258 Z"/>
-        </clipPath>
-              </defs>
-
-      <polygon points="796,202 906,150 906,272" fill="url(#cBeam)"/>
-      <ellipse cx="455" cy="306" rx="360" ry="18" fill="url(#cShadow)"/>
-
-      <g class="carbody"><g transform="translate(460 0) scale(.88 1) translate(-460 0)">
-        <!-- body -->
-        <path fill="url(#cPaint)" d="M95 258 C80 256 74 246 74 232 L76 196 C77 176 86 164 104 158 L130 128 C140 112 160 104 190 102 L520 100 C560 100 590 108 616 124 L690 164 C730 170 780 176 812 184 C836 190 846 204 846 220 L846 240 C846 252 838 258 826 258 L752 258 A62 62 0 0 0 628 258 L277 258 A62 62 0 0 0 153 258 Z"/>
-        <g clip-path="url(#cBodyClip)">
-          <!-- shoulder highlight -->
-          <path d="M60 176 C300 170 600 172 860 196 L860 204 C600 182 300 180 60 186 Z" fill="#cfe2ff" opacity=".55"/>
-          <!-- lower body darker with road reflection -->
-          <rect x="60" y="226" width="800" height="40" fill="#061634" opacity=".55"/>
-          <rect x="60" y="222" width="800" height="3" fill="#8fb8f0" opacity=".35"/>
-          <!-- sweeping reflection -->
-          <rect x="240" y="96" width="120" height="170" fill="url(#cSheen)" opacity=".35" transform="skewX(-28)"/>
-        </g>
-        <!-- wheel arch trims -->
-        <path d="M150 258 A65 65 0 0 1 280 258" fill="none" stroke="#0b0d0e" stroke-width="7"/>
-        <path d="M625 258 A65 65 0 0 1 755 258" fill="none" stroke="#0b0d0e" stroke-width="7"/>
-        <!-- glass -->
-        <path fill="url(#cGlass)" d="M152 160 L180 126 C190 116 202 113 220 113 L512 111 C548 111 574 118 596 132 L650 166 Z"/>
-        <path d="M152 160 L650 166" stroke="#0a0c0d" stroke-width="3"/>
-        <rect x="298" y="112" width="12" height="54" fill="#0a0c0d"/>
-        <rect x="468" y="111" width="12" height="55" fill="#0a0c0d"/>
-        <path d="M200 150 L240 118 M520 158 L556 118" stroke="#fff" stroke-opacity=".18" stroke-width="10" stroke-linecap="round"/>
-        <!-- roof rail -->
-        <path d="M205 100 C300 96 440 95 540 97" fill="none" stroke="#c9cfd3" stroke-width="5" stroke-linecap="round"/>
-        <!-- door seams & handles -->
-        <path d="M304 168 C302 200 300 228 300 252 M474 168 L476 252 M650 168 C660 186 664 204 664 226" fill="none" stroke="#0a1f45" stroke-width="2"/>
-        <rect x="420" y="184" width="34" height="6" rx="3" fill="#b8c4d4"/>
-        <rect x="596" y="186" width="34" height="6" rx="3" fill="#b8c4d4"/>
-        <!-- side step -->
-        <path d="M282 250 L624 250" stroke="#aab4bb" stroke-width="4" stroke-linecap="round"/>
-        <!-- mirror -->
-        <path d="M624 150 C640 142 664 144 668 156 L664 166 L628 166 Z" fill="#0a2250"/>
-        <path d="M630 150 C644 146 658 147 663 154" stroke="#8fb8f0" stroke-width="2" fill="none"/>
-        <!-- headlamp -->
-        <path d="M784 186 C808 186 830 192 842 204 L834 210 C818 202 800 198 780 196 Z" fill="#eaf6ff"/>
-        <path d="M786 199 C806 201 822 205 834 211" stroke="#7fd4ff" stroke-width="2.5" fill="none"/>
-        <circle cx="828" cy="202" r="22" fill="#fff7d6" opacity=".22"/>
-        <!-- grille & bumper -->
-        <path d="M838 222 L846 222 L846 240 L834 240 Z" fill="#101315"/>
-        <path d="M770 246 L842 246" stroke="#101315" stroke-width="5" stroke-linecap="round"/>
-        <!-- tail lamp -->
-        <path d="M76 180 C82 170 92 164 106 162 L106 190 L76 192 Z" fill="#c61f2a"/>
-        <path d="M80 184 L104 182" stroke="#ff6b6b" stroke-width="2"/>
-        <path d="M76 238 L140 238" stroke="#101315" stroke-width="5" stroke-linecap="round"/>
-      </g>
-        <!-- small brand badge on rear door -->
-        <text x="400" y="238" text-anchor="middle" font-family="Big Shoulders Display, Arial Narrow, sans-serif" font-weight="900" font-size="13" letter-spacing="3" fill="#f5a524">R.V.A.S TRAVELS</text>
-      </g>
-
-      <g transform="translate(244 258)">
-          <circle r="51" fill="#101213"/>
-          <circle r="45" fill="none" stroke="#2a2e30" stroke-width="3"/>
-          <circle r="36" fill="#1b1e20"/>
-          <rect x="-12" y="-30" width="24" height="16" rx="4" fill="#d12a2a"/>
-          <g class="wheel">
-            <circle r="34" fill="url(#cRim)"/>
-            <g fill="#2b3134">
-              <path d="M-4 -10 L-9 -31 L9 -31 L4 -10 Z"/>
-              <path d="M-4 -10 L-9 -31 L9 -31 L4 -10 Z" transform="rotate(72)"/>
-              <path d="M-4 -10 L-9 -31 L9 -31 L4 -10 Z" transform="rotate(144)"/>
-              <path d="M-4 -10 L-9 -31 L9 -31 L4 -10 Z" transform="rotate(216)"/>
-              <path d="M-4 -10 L-9 -31 L9 -31 L4 -10 Z" transform="rotate(288)"/>
-            </g>
-            <circle r="34" fill="none" stroke="#8d969b" stroke-width="2"/>
-            <circle r="10" fill="#3a4145"/>
-            <circle r="4" fill="#c3c9cd"/>
-          </g></g>
-      <g transform="translate(662 258)">
-          <circle r="51" fill="#101213"/>
-          <circle r="45" fill="none" stroke="#2a2e30" stroke-width="3"/>
-          <circle r="36" fill="#1b1e20"/>
-          <rect x="-12" y="-30" width="24" height="16" rx="4" fill="#d12a2a"/>
-          <g class="wheel">
-            <circle r="34" fill="url(#cRim)"/>
-            <g fill="#2b3134">
-              <path d="M-4 -10 L-9 -31 L9 -31 L4 -10 Z"/>
-              <path d="M-4 -10 L-9 -31 L9 -31 L4 -10 Z" transform="rotate(72)"/>
-              <path d="M-4 -10 L-9 -31 L9 -31 L4 -10 Z" transform="rotate(144)"/>
-              <path d="M-4 -10 L-9 -31 L9 -31 L4 -10 Z" transform="rotate(216)"/>
-              <path d="M-4 -10 L-9 -31 L9 -31 L4 -10 Z" transform="rotate(288)"/>
-            </g>
-            <circle r="34" fill="none" stroke="#8d969b" stroke-width="2"/>
-            <circle r="10" fill="#3a4145"/>
-            <circle r="4" fill="#c3c9cd"/>
-          </g></g>
-    </svg>
+  <button type="button" class="stage" id="carStage" aria-label="Book a car: Sedan, Ertiga, Innova Crysta or Tempo Traveller">
+    <svg viewBox="40 0 880 326" aria-hidden="true" class="fleet-svg"><defs>
+<linearGradient id="fGlass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4b6a80"/><stop offset=".45" stop-color="#16222b"/><stop offset="1" stop-color="#05090c"/></linearGradient>
+<linearGradient id="fSheen" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".55"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<linearGradient id="fBeam" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff7d6" stop-opacity=".7"/><stop offset="1" stop-color="#fff7d6" stop-opacity="0"/></linearGradient>
+<radialGradient id="fRim" cx=".45" cy=".4" r=".6"><stop offset="0" stop-color="#ffffff"/><stop offset=".55" stop-color="#c3c9cd"/><stop offset="1" stop-color="#6f787e"/></radialGradient>
+<radialGradient id="fShadow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#000" stop-opacity=".65"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>
+</defs>
+<g class="car car1" data-car="sedan">
+<defs><linearGradient id="p_sedan" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="0.18" stop-color="#e9edf0"/><stop offset="0.5" stop-color="#c9d0d6"/><stop offset="0.78" stop-color="#9aa4ac"/><stop offset="1" stop-color="#6b757d"/></linearGradient>
+<clipPath id="k_sedan"><path d="M92 258 C80 256 74 246 74 234 L76 202 C78 188 88 180 104 178 L214 168 C252 138 292 118 344 112 L520 110 C562 110 592 124 620 152 L640 168 L792 180 C826 184 842 198 844 216 L846 240 C846 252 838 258 826 258 L732 258 A62 62 0 0 0 608 258 L292 258 A62 62 0 0 0 168 258 Z"/></clipPath></defs>
+<text x="460" y="34" text-anchor="middle" class="car-label">SEDAN · 4 SEATS</text>
+<polygon points="800,200 940,150 940,268" fill="url(#fBeam)"/>
+<ellipse cx="458" cy="306" rx="380" ry="18" fill="url(#fShadow)"/>
+<g class="carbody">
+<path fill="url(#p_sedan)" d="M92 258 C80 256 74 246 74 234 L76 202 C78 188 88 180 104 178 L214 168 C252 138 292 118 344 112 L520 110 C562 110 592 124 620 152 L640 168 L792 180 C826 184 842 198 844 216 L846 240 C846 252 838 258 826 258 L732 258 A62 62 0 0 0 608 258 L292 258 A62 62 0 0 0 168 258 Z"/>
+<g clip-path="url(#k_sedan)">
+<path d="M40 176 C300 170 600 172 880 196 L880 205 C600 182 300 180 40 186 Z" fill="#ffffff" opacity=".55"/>
+<rect x="40" y="226" width="840" height="40" fill="#3b444b" opacity=".5"/>
+<rect x="240" y="60" width="120" height="210" fill="url(#fSheen)" opacity=".35" transform="skewX(-28)"/>
+</g>
+<path d="M164 258 A66 66 0 0 1 296 258" fill="none" stroke="#0b0d0e" stroke-width="7"/>
+<path d="M604 258 A66 66 0 0 1 736 258" fill="none" stroke="#0b0d0e" stroke-width="7"/>
+<path fill="url(#fGlass)" d="M232 166 C266 138 300 124 344 120 L516 118 C552 118 578 130 602 156 L612 168 Z"/>
+<rect x="418" y="118" width="12" height="50" fill="#0a0c0d"/>
+<path d="M200 150 L240 118 M520 158 L556 118" stroke="#fff" stroke-opacity=".16" stroke-width="10" stroke-linecap="round"/>
+<path d="M420 170 L420 252 M610 170 C616 200 618 226 616 248 M240 170 C236 200 236 226 238 248" fill="none" stroke="#7d878f" stroke-width="2"/>
+<rect x="376" y="186" width="34" height="6" rx="3" fill="#f4f6f7"/>
+<rect x="560" y="186" width="34" height="6" rx="3" fill="#f4f6f7"/>
+<path d="M600 150 C616 142 640 144 644 156 L640 166 L604 166 Z" fill="#14181a"/>
+<path d="M792 182 C816 182 830 188 842 200 L834 206 C818 198 808 194 788 194 Z" fill="#eaf6ff"/>
+<circle cx="828" cy="194" r="22" fill="#fff7d6" opacity=".25"/>
+<path d="M834 220 L842 220 L842 238 L830 238 Z" fill="#101315"/>
+<path d="M766 246 L838 246" stroke="#101315" stroke-width="5" stroke-linecap="round"/>
+<path d="M76 186 L104 184 L104 200 L76 202 Z" fill="#c61f2a"/>
+<path d="M76 238 L140 238" stroke="#101315" stroke-width="5" stroke-linecap="round"/>
+<text x="420" y="240" text-anchor="middle" font-family="Big Shoulders Display, Arial Narrow, sans-serif" font-weight="900" font-size="13" letter-spacing="3" fill="#0d2b2e">R.V.A.S TRAVELS</text>
+</g>
+<g transform="translate(230 258)">
+  <circle r="51" fill="#101213"/><circle r="45" fill="none" stroke="#2a2e30" stroke-width="3"/>
+  <circle r="36" fill="#1b1e20"/>
+  <g class="wheel"><circle r="34" fill="url(#fRim)"/>
+    <g fill="#2b3134"><path d="M-4 -10 L-9 -31 L9 -31 L4 -10 Z" transform="rotate(0)"/><path d="M-4 -10 L-9 -31 L9 -31 L4 -10 Z" transform="rotate(72)"/><path d="M-4 -10 L-9 -31 L9 -31 L4 -10 Z" transform="rotate(144)"/><path d="M-4 -10 L-9 -31 L9 -31 L4 -10 Z" transform="rotate(216)"/><path d="M-4 -10 L-9 -31 L9 -31 L4 -10 Z" transform="rotate(288)"/></g>
+    <circle r="34" fill="none" stroke="#8d969b" stroke-width="2"/><circle r="10" fill="#3a4145"/><circle r="4" fill="#c3c9cd"/></g></g>
+<g transform="translate(670 258)">
+  <circle r="51" fill="#101213"/><circle r="45" fill="none" stroke="#2a2e30" stroke-width="3"/>
+  <circle r="36" fill="#1b1e20"/>
+  <g class="wheel"><circle r="34" fill="url(#fRim)"/>
+    <g fill="#2b3134"><path d="M-4 -10 L-9 -31 L9 -31 L4 -10 Z" transform="rotate(0)"/><path d="M-4 -10 L-9 -31 L9 -31 L4 -10 Z" transform="rotate(72)"/><path d="M-4 -10 L-9 -31 L9 -31 L4 -10 Z" transform="rotate(144)"/><path d="M-4 -10 L-9 -31 L9 -31 L4 -10 Z" transform="rotate(216)"/><path d="M-4 -10 L-9 -31 L9 -31 L4 -10 Z" transform="rotate(288)"/></g>
+    <circle r="34" fill="none" stroke="#8d969b" stroke-width="2"/><circle r="10" fill="#3a4145"/><circle r="4" fill="#c3c9cd"/></g></g>
+</g>
+<g class="car car2" data-car="ertiga">
+<defs><linearGradient id="p_ertiga" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff9a8a"/><stop offset="0.18" stop-color="#d23a2f"/><stop offset="0.5" stop-color="#a3201b"/><stop offset="0.78" stop-color="#7a1512"/><stop offset="1" stop-color="#4c0b09"/></linearGradient>
+<clipPath id="k_ertiga"><path d="M92 258 C80 256 74 246 74 232 L76 192 C77 172 86 158 102 152 L132 120 C142 108 160 102 188 102 L540 102 C578 102 606 114 630 138 L670 168 C722 174 786 182 812 190 C836 196 846 208 846 222 L846 240 C846 252 838 258 826 258 L732 258 A62 62 0 0 0 608 258 L292 258 A62 62 0 0 0 168 258 Z"/></clipPath></defs>
+<text x="460" y="34" text-anchor="middle" class="car-label">ERTIGA · 6 SEATS</text>
+<polygon points="800,202 940,150 940,268" fill="url(#fBeam)"/>
+<ellipse cx="458" cy="306" rx="380" ry="18" fill="url(#fShadow)"/>
+<g class="carbody">
+<path fill="url(#p_ertiga)" d="M92 258 C80 256 74 246 74 232 L76 192 C77 172 86 158 102 152 L132 120 C142 108 160 102 188 102 L540 102 C578 102 606 114 630 138 L670 168 C722 174 786 182 812 190 C836 196 846 208 846 222 L846 240 C846 252 838 258 826 258 L732 258 A62 62 0 0 0 608 258 L292 258 A62 62 0 0 0 168 258 Z"/>
+<g clip-path="url(#k_ertiga)">
+<path d="M40 176 C300 170 600 172 880 196 L880 205 C600 182 300 180 40 186 Z" fill="#ffd1c9" opacity=".55"/>
+<rect x="40" y="226" width="840" height="40" fill="#2a0605" opacity=".5"/>
+<rect x="240" y="60" width="120" height="210" fill="url(#fSheen)" opacity=".35" transform="skewX(-28)"/>
+</g>
+<path d="M164 258 A66 66 0 0 1 296 258" fill="none" stroke="#0b0d0e" stroke-width="7"/>
+<path d="M604 258 A66 66 0 0 1 736 258" fill="none" stroke="#0b0d0e" stroke-width="7"/>
+<path fill="url(#fGlass)" d="M142 152 L164 124 C172 115 184 112 200 112 L534 112 C568 112 592 122 612 140 L644 166 L140 164 Z"/>
+<rect x="300" y="112" width="12" height="54" fill="#0a0c0d"/>
+<rect x="470" y="112" width="12" height="54" fill="#0a0c0d"/>
+<path d="M200 150 L240 118 M520 158 L556 118" stroke="#fff" stroke-opacity=".16" stroke-width="10" stroke-linecap="round"/>
+<path d="M306 168 L304 252 M476 168 L476 252 M646 168 C656 190 660 210 660 234" fill="none" stroke="#5a100d" stroke-width="2"/>
+<rect x="424" y="184" width="34" height="6" rx="3" fill="#e8c7c3"/>
+<rect x="600" y="184" width="34" height="6" rx="3" fill="#e8c7c3"/>
+<path d="M626 150 C642 142 666 144 670 156 L666 166 L630 166 Z" fill="#14181a"/>
+<path d="M790 186 C814 186 830 192 842 202 L834 208 C818 200 806 196 786 196 Z" fill="#eaf6ff"/>
+<circle cx="828" cy="197" r="22" fill="#fff7d6" opacity=".25"/>
+<path d="M834 222 L842 222 L842 240 L830 240 Z" fill="#101315"/>
+<path d="M766 246 L838 246" stroke="#101315" stroke-width="5" stroke-linecap="round"/>
+<path d="M76 170 L104 168 L104 196 L76 198 Z" fill="#c61f2a"/>
+<path d="M76 238 L140 238" stroke="#101315" stroke-width="5" stroke-linecap="round"/>
+<text x="420" y="240" text-anchor="middle" font-family="Big Shoulders Display, Arial Narrow, sans-serif" font-weight="900" font-size="13" letter-spacing="3" fill="#f5a524">R.V.A.S TRAVELS</text>
+</g>
+<g transform="translate(230 258)">
+  <circle r="51" fill="#101213"/><circle r="45" fill="none" stroke="#2a2e30" stroke-width="3"/>
+  <circle r="36" fill="#1b1e20"/>
+  <g class="wheel"><circle r="34" fill="url(#fRim)"/>
+    <g fill="#2b3134"><path d="M-4 -10 L-9 -31 L9 -31 L4 -10 Z" transform="rotate(0)"/><path d="M-4 -10 L-9 -31 L9 -31 L4 -10 Z" transform="rotate(72)"/><path d="M-4 -10 L-9 -31 L9 -31 L4 -10 Z" transform="rotate(144)"/><path d="M-4 -10 L-9 -31 L9 -31 L4 -10 Z" transform="rotate(216)"/><path d="M-4 -10 L-9 -31 L9 -31 L4 -10 Z" transform="rotate(288)"/></g>
+    <circle r="34" fill="none" stroke="#8d969b" stroke-width="2"/><circle r="10" fill="#3a4145"/><circle r="4" fill="#c3c9cd"/></g></g>
+<g transform="translate(670 258)">
+  <circle r="51" fill="#101213"/><circle r="45" fill="none" stroke="#2a2e30" stroke-width="3"/>
+  <circle r="36" fill="#1b1e20"/>
+  <g class="wheel"><circle r="34" fill="url(#fRim)"/>
+    <g fill="#2b3134"><path d="M-4 -10 L-9 -31 L9 -31 L4 -10 Z" transform="rotate(0)"/><path d="M-4 -10 L-9 -31 L9 -31 L4 -10 Z" transform="rotate(72)"/><path d="M-4 -10 L-9 -31 L9 -31 L4 -10 Z" transform="rotate(144)"/><path d="M-4 -10 L-9 -31 L9 -31 L4 -10 Z" transform="rotate(216)"/><path d="M-4 -10 L-9 -31 L9 -31 L4 -10 Z" transform="rotate(288)"/></g>
+    <circle r="34" fill="none" stroke="#8d969b" stroke-width="2"/><circle r="10" fill="#3a4145"/><circle r="4" fill="#c3c9cd"/></g></g>
+</g>
+<g class="car car3" data-car="innova">
+<defs><linearGradient id="p_innova" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8fb8f0"/><stop offset="0.18" stop-color="#3f79c9"/><stop offset="0.5" stop-color="#1c4f9c"/><stop offset="0.78" stop-color="#123a78"/><stop offset="1" stop-color="#0a2250"/></linearGradient>
+<clipPath id="k_innova"><path d="M95 258 C80 256 74 246 74 232 L76 196 C77 176 86 164 104 158 L130 128 C140 112 160 104 190 102 L520 100 C560 100 590 108 616 124 L690 164 C730 170 780 176 812 184 C836 190 846 204 846 220 L846 240 C846 252 838 258 826 258 L734 258 A62 62 0 0 0 610 258 L298 258 A62 62 0 0 0 174 258 Z"/></clipPath></defs>
+<text x="460" y="34" text-anchor="middle" class="car-label">INNOVA CRYSTA · 7 SEATS</text>
+<polygon points="800,202 940,150 940,268" fill="url(#fBeam)"/>
+<ellipse cx="458" cy="306" rx="380" ry="18" fill="url(#fShadow)"/>
+<g class="carbody">
+<path fill="url(#p_innova)" d="M95 258 C80 256 74 246 74 232 L76 196 C77 176 86 164 104 158 L130 128 C140 112 160 104 190 102 L520 100 C560 100 590 108 616 124 L690 164 C730 170 780 176 812 184 C836 190 846 204 846 220 L846 240 C846 252 838 258 826 258 L734 258 A62 62 0 0 0 610 258 L298 258 A62 62 0 0 0 174 258 Z"/>
+<g clip-path="url(#k_innova)">
+<path d="M40 176 C300 170 600 172 880 196 L880 205 C600 182 300 180 40 186 Z" fill="#cfe2ff" opacity=".55"/>
+<rect x="40" y="226" width="840" height="40" fill="#061634" opacity=".5"/>
+<rect x="240" y="60" width="120" height="210" fill="url(#fSheen)" opacity=".35" transform="skewX(-28)"/>
+</g>
+<path d="M170 258 A66 66 0 0 1 302 258" fill="none" stroke="#0b0d0e" stroke-width="7"/>
+<path d="M606 258 A66 66 0 0 1 738 258" fill="none" stroke="#0b0d0e" stroke-width="7"/>
+<path fill="url(#fGlass)" d="M152 160 L180 126 C190 116 202 113 220 113 L512 111 C548 111 574 118 596 132 L650 166 Z"/>
+<rect x="298" y="112" width="12" height="54" fill="#0a0c0d"/>
+<rect x="468" y="111" width="12" height="55" fill="#0a0c0d"/>
+<path d="M200 150 L240 118 M520 158 L556 118" stroke="#fff" stroke-opacity=".16" stroke-width="10" stroke-linecap="round"/>
+<path d="M205 100 C300 96 440 95 540 97" fill="none" stroke="#c9cfd3" stroke-width="5" stroke-linecap="round"/>
+<path d="M304 168 C302 200 300 228 300 252 M474 168 L476 252 M650 168 C660 186 664 204 664 226" fill="none" stroke="#0a1f45" stroke-width="2"/>
+<rect x="420" y="184" width="34" height="6" rx="3" fill="#b8c4d4"/>
+<rect x="596" y="186" width="34" height="6" rx="3" fill="#b8c4d4"/>
+<path d="M626 150 C642 142 666 144 670 156 L666 166 L630 166 Z" fill="#14181a"/>
+<path d="M784 186 C808 186 830 192 842 204 L834 210 C818 202 800 198 780 198 Z" fill="#eaf6ff"/>
+<circle cx="828" cy="198" r="22" fill="#fff7d6" opacity=".25"/>
+<path d="M834 224 L842 224 L842 242 L830 242 Z" fill="#101315"/>
+<path d="M766 246 L838 246" stroke="#101315" stroke-width="5" stroke-linecap="round"/>
+<path d="M76 170 L106 168 L106 192 L76 194 Z" fill="#c61f2a"/>
+<path d="M76 238 L140 238" stroke="#101315" stroke-width="5" stroke-linecap="round"/>
+<text x="424" y="240" text-anchor="middle" font-family="Big Shoulders Display, Arial Narrow, sans-serif" font-weight="900" font-size="13" letter-spacing="3" fill="#f5a524">R.V.A.S TRAVELS</text>
+</g>
+<g transform="translate(236 258)">
+  <circle r="51" fill="#101213"/><circle r="45" fill="none" stroke="#2a2e30" stroke-width="3"/>
+  <circle r="36" fill="#1b1e20"/>
+  <g class="wheel"><circle r="34" fill="url(#fRim)"/>
+    <g fill="#2b3134"><path d="M-4 -10 L-9 -31 L9 -31 L4 -10 Z" transform="rotate(0)"/><path d="M-4 -10 L-9 -31 L9 -31 L4 -10 Z" transform="rotate(72)"/><path d="M-4 -10 L-9 -31 L9 -31 L4 -10 Z" transform="rotate(144)"/><path d="M-4 -10 L-9 -31 L9 -31 L4 -10 Z" transform="rotate(216)"/><path d="M-4 -10 L-9 -31 L9 -31 L4 -10 Z" transform="rotate(288)"/></g>
+    <circle r="34" fill="none" stroke="#8d969b" stroke-width="2"/><circle r="10" fill="#3a4145"/><circle r="4" fill="#c3c9cd"/></g></g>
+<g transform="translate(672 258)">
+  <circle r="51" fill="#101213"/><circle r="45" fill="none" stroke="#2a2e30" stroke-width="3"/>
+  <circle r="36" fill="#1b1e20"/>
+  <g class="wheel"><circle r="34" fill="url(#fRim)"/>
+    <g fill="#2b3134"><path d="M-4 -10 L-9 -31 L9 -31 L4 -10 Z" transform="rotate(0)"/><path d="M-4 -10 L-9 -31 L9 -31 L4 -10 Z" transform="rotate(72)"/><path d="M-4 -10 L-9 -31 L9 -31 L4 -10 Z" transform="rotate(144)"/><path d="M-4 -10 L-9 -31 L9 -31 L4 -10 Z" transform="rotate(216)"/><path d="M-4 -10 L-9 -31 L9 -31 L4 -10 Z" transform="rotate(288)"/></g>
+    <circle r="34" fill="none" stroke="#8d969b" stroke-width="2"/><circle r="10" fill="#3a4145"/><circle r="4" fill="#c3c9cd"/></g></g>
+</g>
+<g class="car car4" data-car="tempo">
+<defs><linearGradient id="p_tempo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="0.18" stop-color="#f3f4f2"/><stop offset="0.5" stop-color="#e2e5e3"/><stop offset="0.78" stop-color="#c3c8c6"/><stop offset="1" stop-color="#8e9693"/></linearGradient>
+<clipPath id="k_tempo"><path d="M84 258 C72 256 66 248 66 236 L66 94 C66 76 78 66 96 66 L690 66 C716 66 732 74 744 92 L786 156 C822 164 846 178 850 204 L852 240 C852 252 844 258 832 258 L726 258 A62 62 0 0 0 602 258 L276 258 A62 62 0 0 0 152 258 Z"/></clipPath></defs>
+<text x="460" y="34" text-anchor="middle" class="car-label">TEMPO TRAVELLER · 12–17 SEATS</text>
+<polygon points="806,186 940,140 940,256" fill="url(#fBeam)"/>
+<ellipse cx="458" cy="306" rx="380" ry="18" fill="url(#fShadow)"/>
+<g class="carbody">
+<path fill="url(#p_tempo)" d="M84 258 C72 256 66 248 66 236 L66 94 C66 76 78 66 96 66 L690 66 C716 66 732 74 744 92 L786 156 C822 164 846 178 850 204 L852 240 C852 252 844 258 832 258 L726 258 A62 62 0 0 0 602 258 L276 258 A62 62 0 0 0 152 258 Z"/>
+<g clip-path="url(#k_tempo)">
+<path d="M40 176 C300 170 600 172 880 196 L880 205 C600 182 300 180 40 186 Z" fill="#ffffff" opacity=".55"/>
+<rect x="40" y="226" width="840" height="40" fill="#4a524f" opacity=".5"/>
+<rect x="240" y="60" width="120" height="210" fill="url(#fSheen)" opacity=".35" transform="skewX(-28)"/>
+</g>
+<g clip-path="url(#k_tempo)"><rect x="40" y="168" width="840" height="14" fill="#f5a524"/><rect x="40" y="186" width="840" height="4" fill="#0d2b2e"/></g>
+<path d="M148 258 A66 66 0 0 1 280 258" fill="none" stroke="#0b0d0e" stroke-width="7"/>
+<path d="M598 258 A66 66 0 0 1 730 258" fill="none" stroke="#0b0d0e" stroke-width="7"/>
+<path fill="url(#fGlass)" d="M96 86 L686 86 L686 144 L96 144 Z M702 86 L728 86 C734 86 738 90 742 96 L776 152 L702 152 Z"/>
+<rect x="208" y="86" width="10" height="58" fill="#0a0c0d"/>
+<rect x="328" y="86" width="10" height="58" fill="#0a0c0d"/>
+<rect x="448" y="86" width="10" height="58" fill="#0a0c0d"/>
+<rect x="568" y="86" width="10" height="58" fill="#0a0c0d"/>
+<rect x="686" y="86" width="16" height="70" fill="#0a0c0d"/>
+<path d="M130 136 L160 94 M380 136 L410 94 M620 136 L650 94" stroke="#fff" stroke-opacity=".16" stroke-width="10" stroke-linecap="round"/>
+<path d="M694 156 L694 250 M590 150 L590 250" fill="none" stroke="#9aa29f" stroke-width="2"/>
+<rect x="650" y="170" width="34" height="6" rx="3" fill="#6b7471"/>
+<path d="M760 140 C776 132 800 134 804 146 L800 156 L764 156 Z" fill="#14181a"/>
+<path d="M800 170 C824 170 834 176 846 190 L838 196 C822 188 816 184 796 184 Z" fill="#eaf6ff"/>
+<circle cx="832" cy="183" r="22" fill="#fff7d6" opacity=".25"/>
+<path d="M838 210 L846 210 L846 228 L834 228 Z" fill="#101315"/>
+<path d="M770 246 L842 246" stroke="#101315" stroke-width="5" stroke-linecap="round"/>
+<path d="M68 150 L84 148 L84 190 L68 192 Z" fill="#c61f2a"/>
+<path d="M68 238 L132 238" stroke="#101315" stroke-width="5" stroke-linecap="round"/>
+<text x="409" y="212" text-anchor="middle" font-family="Big Shoulders Display, Arial Narrow, sans-serif" font-weight="900" font-size="13" letter-spacing="3" fill="#0d2b2e">R.V.A.S TRAVELS</text>
+</g>
+<g transform="translate(214 258)">
+  <circle r="51" fill="#101213"/><circle r="45" fill="none" stroke="#2a2e30" stroke-width="3"/>
+  <circle r="36" fill="#1b1e20"/>
+  <g class="wheel"><circle r="34" fill="url(#fRim)"/>
+    <g fill="#2b3134"><path d="M-4 -10 L-9 -31 L9 -31 L4 -10 Z" transform="rotate(0)"/><path d="M-4 -10 L-9 -31 L9 -31 L4 -10 Z" transform="rotate(72)"/><path d="M-4 -10 L-9 -31 L9 -31 L4 -10 Z" transform="rotate(144)"/><path d="M-4 -10 L-9 -31 L9 -31 L4 -10 Z" transform="rotate(216)"/><path d="M-4 -10 L-9 -31 L9 -31 L4 -10 Z" transform="rotate(288)"/></g>
+    <circle r="34" fill="none" stroke="#8d969b" stroke-width="2"/><circle r="10" fill="#3a4145"/><circle r="4" fill="#c3c9cd"/></g></g>
+<g transform="translate(664 258)">
+  <circle r="51" fill="#101213"/><circle r="45" fill="none" stroke="#2a2e30" stroke-width="3"/>
+  <circle r="36" fill="#1b1e20"/>
+  <g class="wheel"><circle r="34" fill="url(#fRim)"/>
+    <g fill="#2b3134"><path d="M-4 -10 L-9 -31 L9 -31 L4 -10 Z" transform="rotate(0)"/><path d="M-4 -10 L-9 -31 L9 -31 L4 -10 Z" transform="rotate(72)"/><path d="M-4 -10 L-9 -31 L9 -31 L4 -10 Z" transform="rotate(144)"/><path d="M-4 -10 L-9 -31 L9 -31 L4 -10 Z" transform="rotate(216)"/><path d="M-4 -10 L-9 -31 L9 -31 L4 -10 Z" transform="rotate(288)"/></g>
+    <circle r="34" fill="none" stroke="#8d969b" stroke-width="2"/><circle r="10" fill="#3a4145"/><circle r="4" fill="#c3c9cd"/></g></g>
+</g>
+</svg>
     <div class="l-road"></div>
   </button>
 
